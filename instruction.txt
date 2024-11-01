@@ -1,0 +1,33 @@
+Concept: To design a virtual assistant (in the form of a bot or mobile application) that helps students and teachers find available rooms in real time to keep classes running smoothly.
+Fun Factor: The interface could have an interactive design with a character (an academic avatar) guiding users, and could even integrate voice chat to give real-time directions.
+Technology: Integrate presence sensors in the rooms and a real-time update system with push notifications via a mobile app.
+
+
+Let's take this part YOU don't seem to understand 
+
+In fact, the room system is managed in a rather special way 
+ach Wednesday, each entity sends its schedule for the following week, with enrolments and classrooms, which enables the room manager to allocate each room to the entity in class. 
+Now we'd like to automate the process and make it possible to do it online, so that entities can have their rooms optimized according to numbers and other parameters.
+
+So here's what's new 
+From Monday to Wednesday at the latest, the administrator will track down the timetables. 
+So by Wednesday at the latest, all the university's entities will be doing an in-depth study of the needs of each room. 
+Now it seems we have to give priority to organized events such as roommates 
+
+And there are 108 teaching groups in the university for 34 rooms, and not all rooms have the same volume. 
+Then the orders of priority are as follows 
+-scientific conferences , 
+-defenses, 
+-exams and 
+- courses 
+When I speak of a pedagogical group, I'm talking about a part of the entity. 
+At the IUT, for example, we have several streams and for each stream, we have licence 1, licence 2 and licence 3, each of which represents a teaching group. 
+We use the number of students in each teaching group to determine which room to allocate to it.
+
+4. Description of Key Processes
+4.1. Room Allocation Process
+Collection of requests: Each university entity submits a request via a reservation form, with the type of event, the number of participants, and the time slot.
+Sorting by Priority and Size: The algorithm sorts requests according to priority (conferences, defenses, etc.), then by size.
+Search for Available Rooms: For each sorted request, the algorithm checks for available rooms that can hold the required number of people, or approximately the required size.
+Allocation and Conflict Management: If several requests conflict on a slot, the request with the highest priority is allocated.
+Recording and Statistical Tracking: Booking information is stored and occupancy statistics are updated.
