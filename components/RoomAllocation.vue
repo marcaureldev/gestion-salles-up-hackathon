@@ -1,9 +1,46 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import GLPK from 'glpk.js'
 
-// Données de test pour les salles
-const mockRooms = [
+// Définition des interfaces
+interface Room {
+  id: number
+  name: string
+  capacity: number
+}
+
+interface Request {
+  id: number
+  entityId: number
+  eventType: 'conference' | 'defense' | 'exam' | 'course'
+  studentCount: number
+  timeSlot: string
+  priority: number
+}
+
+interface Allocation {
+  requestId: number
+  roomId: number
+  timeSlot: string
+}
+
+interface GlpkProblem {
+  name: string
+  objective: {
+    direction: number
+    name: string
+    vars: Array<{ name: string; coef: number }>
+  }
+  subjectTo: Array<{
+    name: string
+    vars: Array<{ name: string; coef: number }>
+    bnds: { type: number; ub: number; lb: number }
+  }>
+  binaries: Array<{ name: string }>
+}
+
+// Les données mockées restent les mêmes
+const mockRooms: Room[] = [
   { id: 1, name: 'Salle A101', capacity: 30 },
   { id: 2, name: 'Salle B201', capacity: 50 },
   { id: 3, name: 'Amphithéâtre C1', capacity: 150 },
@@ -11,8 +48,7 @@ const mockRooms = [
   { id: 5, name: 'Salle E201', capacity: 24 }
 ]
 
-// Données de test pour les demandes
-const mockRequests = [
+const mockRequests: Request[] = [
   { id: 1, entityId: 101, eventType: 'course', studentCount: 25, timeSlot: '8h-10h', priority: 1 },
   { id: 2, entityId: 102, eventType: 'exam', studentCount: 30, timeSlot: '8h-10h', priority: 2 },
   { id: 3, entityId: 103, eventType: 'defense', studentCount: 15, timeSlot: '10h-12h', priority: 3 },
@@ -22,13 +58,14 @@ const mockRequests = [
   { id: 7, entityId: 107, eventType: 'course', studentCount: 27, timeSlot: '8h-10h', priority: 1 }
 ]
 
-const rooms = ref([])
-const requests = ref([])
-const glpkInstance = ref(null)
-const result = ref(null)
-const allocations = ref([])
-const isLoading = ref(false)
-const error = ref(null)
+// Refs typées
+const rooms = ref<Room[]>([])
+const requests = ref<Request[]>([])
+const glpkInstance = ref<any>(null)
+const result = ref<any>(null)
+const allocations = ref<Allocation[]>([])
+const isLoading = ref<boolean>(false)
+const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
@@ -72,7 +109,7 @@ const processResults = (result) => {
   }
 }
 
-const getEventTypeClass = (type) => {
+const getEventTypeClass = (type: Request['eventType'] | ''): string => {
   switch (type) {
     case 'conference': return 'bg-purple-100 text-purple-800'
     case 'defense': return 'bg-green-100 text-green-800'
@@ -82,7 +119,7 @@ const getEventTypeClass = (type) => {
   }
 }
 
-const getPriority = (eventType) => {
+const getPriority = (eventType: Request['eventType']): number => {
   switch (eventType) {
     case 'conference': return 4
     case 'defense': return 3
@@ -99,7 +136,7 @@ const solveAllocation = async () => {
 
   // Structure principale du problème d'optimisation linéaire
   // On cherche à maximiser l'objectif tout en respectant les contraintes
-  const problem = {
+  const problem: GlpkProblem = {
     name: 'Room Allocation',
     objective: {
       direction: glpkInstance.value.GLP_MAX,  // On maximise la fonction objectif
@@ -188,7 +225,14 @@ const solveAllocation = async () => {
   }
 }
 
-const translateEventType = (type) => {
+const calculateOccupancy = (allocation: Allocation): number => {
+  const request = requests.value.find(r => r.id === allocation.requestId)
+  const room = rooms.value.find(r => r.id === allocation.roomId)
+  if (!request || !room) return 0
+  return Math.round((request.studentCount / room.capacity) * 100)
+}
+
+const translateEventType = (type: Request['eventType']): string => {
   switch (type) {
     case 'conference': return 'Conférence'
     case 'defense': return 'Soutenance'
@@ -198,15 +242,8 @@ const translateEventType = (type) => {
   }
 }
 
-const calculateOccupancy = (allocation) => {
-  const request = requests.value.find(r => r.id === allocation.requestId)
-  const room = rooms.value.find(r => r.id === allocation.roomId)
-  if (!request || !room) return 0
-  return Math.round((request.studentCount / room.capacity) * 100)
-}
-
 // Fonction d'interprétation des résultats bruts
-const interpretResults = (vars) => {
+const interpretResults = (vars: Record<string, number>): Record<string, any[]> => {
   // Structure pour stocker les allocations par créneau
   const interpretations = {}
 
