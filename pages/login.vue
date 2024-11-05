@@ -1,4 +1,4 @@
-9<template>
+<template>
     <div class="flex flex-col justify-center items-center h-[90vh]">
         <h1 class="text-center text-xl font-bold bg-custom-gradient bg-clip-text text-transparent">
             Se connecter
@@ -44,15 +44,5 @@
 <script setup>
 definePageMeta({
     layout: 'form-layout'
-})
-</script><template>
-    <div>
-        
-    </div>
-</template>
-
-<script setup lang="ts">
-definePageMeta({
-    layout: 'form-layout',
 })
 </script>
