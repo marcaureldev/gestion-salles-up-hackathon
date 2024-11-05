@@ -45,4 +45,14 @@
 definePageMeta({
     layout: 'form-layout'
 })
+</script><template>
+    <div>
+        
+    </div>
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+    layout: 'form-layout',
+})
 </script>
