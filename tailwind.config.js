@@ -16,6 +16,7 @@ module.exports = {
       backgroundImage: {
         'custom-gradient': 'linear-gradient(162deg, #517879 4.83%, #1E3E57 103.44%)',
         'formPicture': "url('/images/form-picture.svg')",
+        'upbj': "url('/images/up_bj.jpg')",
       },
       colors: {
         'primary-color': '#299D91',

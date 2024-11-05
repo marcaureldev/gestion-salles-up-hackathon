@@ -28,6 +28,11 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useRoute } from 'vue-router';  // Pour accéder au paramètre de la route
 
+definePageMeta({
+    layout: 'user-layout',
+})
+
+
 const route = useRoute();
 const fil = ref(route.params.calendar);
 
