@@ -3,7 +3,7 @@
         <button class="bg-custom-gradient p-2 rounded-md mb-4 text-white" @click="showModal = true">Ajouter des filières</button>
         <div class="space-y-3" v-if="confirmedFilieres.length > 0">
             <h2>Filières confirmées :</h2>
-            <ul class="grid grid-cols-3 gap-5 items-center rounded-md cursor-pointer">
+            <ul class="grid grid-cols-3 2xl:grid-cols-4 gap-5 items-center rounded-md cursor-pointer">
                 <li class="bg-custom-gradient text-white max-w-80 h-52 p-2 rounded-md flex items-center justify-center"
                     v-for="(filiere, index) in confirmedFilieres" :key="index" @click.prevent="goToCalendar(filiere)">
                     {{ filiere }}

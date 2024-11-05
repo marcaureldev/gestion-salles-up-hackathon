@@ -2,7 +2,9 @@
   <div class="sticky z-30 top-0 bg-white border-b-2">
     <div class="flex justify-between items-center max-w-screen-xl mx-auto xl:max-w-full p-3 md:px-8 md:py-3">
       <div class="flex space-x-2 items-center">
-        <h1 class="text-xl bg-custom-gradient font-bold text-center bg-clip-text text-transparent">Unispace</h1>
+      <NuxtLink to="/">
+        <h1 class="text-3xl bg-custom-gradient font-bold text-center bg-clip-text text-transparent">Unispace</h1>
+      </NuxtLink>
       </div>
       <NuxtLink to="">
         <div class="flex space-x-2 items-center bg-gray-lighter p-3 rounded-2xl">
