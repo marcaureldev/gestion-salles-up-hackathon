@@ -29,107 +29,170 @@
       </div>
 
       <!-- Tableau des attributions -->
-      <div class="overflow-x-auto">
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Salle</th>
-              <th class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Matin (07:00-13:00)</th>
-              <th class="px-4 py-2 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Soir (15:00-19:00)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="salle in filteredSalles" :key="salle" class="hover:bg-gray-50">
-              <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
-                {{ salle }}
-              </td>
-              <td v-for="periode in ['matin', 'soir']" :key="periode" class="px-4 py-4 border">
-                <div 
-                  v-if="getAttribution(salle, periode)" 
-                  :class="getAttributionClass(getAttribution(salle, periode).entite_nom)"
-                  class="p-2 rounded"
-                >
-                  <p class="font-semibold">{{ getAttribution(salle, periode).entite_nom }}</p>
-                  <p class="text-xs">{{ getAttribution(salle, periode).filiere_nom }}</p>
-                  <p class="text-xs opacity-75">
-                    {{ getAttribution(salle, periode).heure_debut.slice(0, 5) }} - 
-                    {{ getAttribution(salle, periode).heure_fin.slice(0, 5) }}
-                  </p>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th class="px-6 py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Salle (Capacité)
+                </th>
+                <th class="px-6 py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Matin (07:00-13:00)
+                </th>
+                <th class="px-6 py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Soir (15:00-19:00)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="salle in filteredSalles" :key="salle" class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">{{ salle }}</div>
+                  <div class="text-sm text-gray-500">
+                    Capacité: {{ getSalleCapacite(salle) }}
+                  </div>
+                </td>
+                <td v-for="periode in ['matin', 'soir']" :key="periode" class="px-6 py-4">
+                  <div 
+                    v-if="getAttribution(salle, periode)" 
+                    class="p-3 rounded-md bg-gray-50 border border-gray-200"
+                    :class="getAttributionClass(getAttribution(salle, periode).entite_nom)"
+                  >
+                    <p class="font-medium text-gray-900">
+                      {{ getAttribution(salle, periode).entite_nom }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                      {{ getAttribution(salle, periode).filiere_nom }}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1">
+                      {{ getAttribution(salle, periode).heure_debut.slice(0, 5) }} - 
+                      {{ getAttribution(salle, periode).heure_fin.slice(0, 5) }}
+                    </p>
+                  </div>
+                  <div v-else class="text-sm text-gray-400 italic">
+                    Non attribué
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-// Définition des props
-const props = defineProps({
-  rooms: {
-    type: Array,
-    required: true
-  },
-  attributions: {
-    type: Array,
-    required: true
-  },
-  entiteColors: {
-    type: Object,
-    required: true
-  }
-})
+const STORAGE_KEYS = {
+  ALLOCATIONS: 'automatic_allocations'
+}
 
-const selectedSection = ref('all')
+// État local
+const attributions = ref([])
+const salles = ref([])
 const selectedFilters = ref({
   salle: '',
   entite: ''
 })
 
-// Remplacer attributionsData par props.attributions dans toutes les fonctions
-// Remplacer entiteColors par props.entiteColors dans la fonction getAttributionClass
+// Charger les données initiales
+const loadInitialData = async () => {
+  try {
+    // Charger les salles depuis l'API avec fetch
+    const response = await fetch(
+      "https://api-gestion-salle.onrender.com/gestion/list-salle"
+    );
+    if (!response.ok) {
+      throw new Error("Erreur lors de la récupération des salles");
+    }
+    salles.value = await response.json()
 
-const getAttributionClass = (entite) => {
-  return props.entiteColors[entite] || 'bg-gray-100'
+    // Vérifier le localStorage
+    const savedAllocations = localStorage.getItem(STORAGE_KEYS.ALLOCATIONS)
+    console.log(savedAllocations);
+    if (savedAllocations) {
+      attributions.value = JSON.parse(savedAllocations)
+    } else {
+      // Initialiser avec des salles vides
+      attributions.value = []
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement des données:', error)
+  }
 }
 
-// Modifier les computed properties pour utiliser props.attributions
-const uniqueSalles = computed(() => 
-  [...new Set(props.attributions.map(a => a.salle_nom))]
-)
-
-const uniqueEntites = computed(() => 
-  [...new Set(props.attributions.map(a => a.entite_nom))]
-)
-
-const filteredSalles = computed(() => {
-  let salles = uniqueSalles.value
-  if (selectedFilters.value.salle) {
-    salles = salles.filter(s => s === selectedFilters.value.salle)
+// Surveiller les changements dans le localStorage
+const watchStorageChanges = (e) => {
+  if (e.key === STORAGE_KEYS.ALLOCATIONS) {
+    attributions.value = JSON.parse(e.newValue || '[]')
   }
-  return salles
+}
+
+// Computed properties
+const uniqueSalles = computed(() => 
+  [...new Set(salles.value.map(s => s.nom))]
+)
+
+const uniqueEntites = computed(() => {
+  const allAttributions = attributions.value || []
+  return [...new Set(allAttributions.map(attr => attr.entite_nom))]
 })
 
-// Fonction pour obtenir l'attribution d'une salle pour une période donnée
+const filteredSalles = computed(() => {
+  let result = uniqueSalles.value
+  if (selectedFilters.value.salle) {
+    result = result.filter(s => s === selectedFilters.value.salle)
+  }
+  return result
+})
+
+// Fonction pour obtenir l'attribution d'une salle
 const getAttribution = (salle, periode) => {
-  return props.attributions.find(a => {
+  return attributions.value?.find(attr => {
     const estMemeCreneauHoraire = 
-      (periode === 'matin' && a.heure_debut === '07:00:00' && a.heure_fin === '13:00:00') ||
-      (periode === 'soir' && a.heure_debut === '15:00:00' && a.heure_fin === '19:00:00')
+      (periode === 'matin' && attr.heure_debut === '07:00:00' && attr.heure_fin === '13:00:00') ||
+      (periode === 'soir' && attr.heure_debut === '15:00:00' && attr.heure_fin === '19:00:00')
     
-    return a.salle_nom === salle && 
+    return attr.salle_nom === salle && 
            estMemeCreneauHoraire &&
-           (!selectedFilters.value.entite || a.entite_nom === selectedFilters.value.entite)
+           (!selectedFilters.value.entite || attr.entite_nom === selectedFilters.value.entite)
   })
 }
+
+const getAttributionClass = (entite) => {
+  const colors = {
+    'ISGA': 'bg-blue-50 border-blue-200',
+    'ISIAM': 'bg-green-50 border-green-200',
+    'HEM': 'bg-yellow-50 border-yellow-200'
+  }
+  return colors[entite] || 'bg-gray-50 border-gray-200'
+}
+
+const getSalleCapacite = (salleName) => {
+  const salle = salles.value.find(s => s.nom === salleName)
+  return salle ? salle.capacite_max : 'N/A'
+}
+
+// Lifecycle hooks
+onMounted(() => {
+  loadInitialData()
+  window.addEventListener('storage', watchStorageChanges)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', watchStorageChanges)
+})
 </script>
 
 <style scoped>
 .attribution-cell {
   min-height: 100px;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none
 }
 </style>

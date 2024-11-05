@@ -14,9 +14,14 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@fullcalendar/vue3": "^6.1.15",
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^1.0.6",
     "@nuxt/fonts": "^0.10.2",
+    "chart.js": "^4.4.6",
+    "date-fns": "^4.1.0",
     "nuxt": "^3.13.2",
     "vue": "latest",
+    "vue-chartjs": "^5.3.2",
     "vue-router": "latest"
   },
   "devDependencies": {
