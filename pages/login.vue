@@ -10,7 +10,7 @@
                     type="text" placeholder="Votre adresse email" />
 
                 <input
-                    class="w-full px-6 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000-gray-500 focus:outline-none focus:bg-white mt-5"
+                    class="w-full px-6 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 focus:outline-none focus:bg-white mt-5"
                     type="password" placeholder="Mot de passe" />
 
                 <button
