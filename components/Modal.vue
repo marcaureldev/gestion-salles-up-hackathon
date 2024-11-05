@@ -9,17 +9,21 @@
                         <label for="filiere" class="text-sm font-medium text-gray-700">
                             Filière
                         </label>
-                        <input id="filiere"
-                            class="w-full px-6 py-3 rounded-lg font-medium border border-gray-200 placeholder-gray-500 focus:outline-none focus:bg-white"
-                            type="text" placeholder="Quelles sont les filières de votre entité?" v-model="filiere"
-                            @keydown.enter.prevent="addFiliere" />
+                        <div class="flex items-center border border-gray-200 rounded-md p-2">
+                            <input id="filiere"
+                                class="w-full px-2 py-3 rounded-lg font-medium placeholder-gray-500 outline-none focus:bg-white"
+                                type="text" placeholder="Quelles sont les filières de votre entité?" v-model="filiere"
+                                @keydown.enter.prevent="addFiliere" />
+                            <SendIcon class="size-7 text-gray-500 cursor-pointer" @click="addFiliere" />
+                        </div>
                     </div>
                 </div>
             </form>
             <div class="mt-4">
                 <h3 class="text-lg font-semibold mb-2">Filières ajoutées :</h3>
                 <ul class=" flex flex-wrap gap-2 items-center">
-                    <li class="bg-custom-gradient text-white py-1 px-2 rounded-md" v-for="(fil, index) in filieres" :key="index">{{ fil }}</li>
+                    <li class="bg-custom-gradient text-white py-1 px-2 rounded-md" v-for="(fil, index) in filieres"
+                        :key="index">{{ fil }}</li>
                 </ul>
             </div>
             <div class="flex justify-end mt-4">

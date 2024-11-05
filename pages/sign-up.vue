@@ -27,7 +27,7 @@ definePageMeta({
                     type="password" placeholder="Confirmer le mot de passe" />
 
 
-                <NuxtLink to="/dashboard">
+                <NuxtLink to="/filiere">
                     <button
                         class="mt-5 font-semibold bg-custom-gradient text-white w-full py-3 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 -ml-1" fill="none" stroke="currentColor" stroke-width="2"
