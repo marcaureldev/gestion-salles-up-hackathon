@@ -1,13 +1,17 @@
 <template>
     <div class="flex flex-col md:flex-row min-h-screen bg-gray-100">
       <!-- Sidebar -->
-      <aside class="w-full md:w-64 bg-white shadow-md md:h-screen">
-        <div class="p-4 border-b">
-          <h1 class="text-2xl font-semibold text-gray-800">Admin Dashboard</h1>
+      <aside :class="[
+        'bg-white shadow-md transition-all duration-300',
+        isSidebarOpen ? 'fixed inset-y-0 left-0 z-50 w-64' : 'hidden',
+        'md:block md:relative md:w-64 md:h-screen'
+      ]">
+        <div class="px-4 py-3 border-b">
+          <h1 class="text-3xl text-transparent bg-clip-text bg-custom-gradient font-bold">UniSpace</h1>
         </div>
-        <nav class="mt-4">
-          <a v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="['flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 transition-colors duration-200', { 'bg-gray-200': activeTab === tab.id }]" href="#">
-            <component :is="tab.icon" class="w-5 h-5 mr-2" />
+        <nav class="mt-6 px-2 space-y-2">
+          <a v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="['flex items-center px-4 py-2 font-semibold text-gray-700 hover:bg-gray-200 transition-colors duration-200 rounded-md', { 'bg-custom-gradient text-white': activeTab === tab.id }]" href="#">
+            <component :is="tab.icon" class="w-5 h-4 mr-2" />
             {{ tab.name }}
           </a>
         </nav>
@@ -16,11 +20,14 @@
       <!-- Main Content -->
       <div class="flex-1 overflow-hidden">
         <header class="bg-white shadow">
-          <div class="mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ activeTabTitle }}</h1>
-            <button @click="toggleSidebar" class="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-              <MenuIcon class="h-6 w-6" />
+          <div class="mx-auto py-3 px-4 sm:px-6 lg:px-8 ">
+            <button @click="toggleSidebar" class="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+              <MenuIcon v-if="!isSidebarOpen" class="h-6 w-6" />
+              <XIcon v-else class="h-6 w-6" />
             </button>
+            <h1 class="text-2xl md:text-3xl text-end font-bold text-transparent bg-clip-text bg-custom-gradient">
+              {{ activeTabTitle }}
+            </h1>
           </div>
         </header>
   
@@ -49,6 +56,13 @@
         </main>
       </div>
     </div>
+  
+    <!-- Overlay for mobile sidebar -->
+    <div 
+      v-if="isSidebarOpen" 
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 md:hidden" 
+      @click="toggleSidebar"
+    ></div>
   </template>
   
   <script setup>
@@ -56,9 +70,9 @@
   const allocationResult = ref(null)
   
   const tabs = [
-    { id: 'calendar', name: 'Calendrier',},
+    { id: 'calendar', name: 'Planning',},
     { id: 'reservations', name: 'Réservations', },
-    { id: 'allocation', name: 'Allocation Auto',},
+    { id: 'allocation', name: 'Attribution',},
     { id: 'stats', name: 'Statistiques',},
   ]
   
@@ -81,9 +95,10 @@
     return activeTabObj ? activeTabObj.name : 'Tableau de bord'
   })
   
+  const isSidebarOpen = ref(false)
+  
   const toggleSidebar = () => {
-    // Implement sidebar toggle for mobile view
-    console.log('Toggle sidebar')
+    isSidebarOpen.value = !isSidebarOpen.value
   }
   
   const editReservation = (reservation) => {
@@ -179,4 +194,21 @@
   @import 'tailwindcss/base';
   @import 'tailwindcss/components';
   @import 'tailwindcss/utilities';
+
+  .bg-customgradient {
+    background: linear-gradient(to right, #4F46E5, #818CF8);
+    color: white;
+  }
+
+  /* Ajout des styles pour le responsive */
+  @media (max-width: 768px) {
+    .overflow-y-auto {
+      height: calc(100vh - 120px) !important;
+    }
+  }
+
+  /* Empêcher le défilement du body quand le sidebar mobile est ouvert */
+  .sidebar-open {
+    overflow: hidden;
+  }
   </style>

@@ -20,7 +20,7 @@
           <button
             @click="runAllocationAlgorithm"
             :disabled="isLoading"
-            class="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 disabled:bg-indigo-300"
+            class="flex items-center px-6 py-3 bg-custom-gradient text-white rounded-lg  disabled:bg-indigo-300"
           >
             <span v-if="isLoading" class="mr-2">
               <svg
@@ -167,7 +167,7 @@
       <div class="flex justify-end mt-4" v-if="hasAllocations">
         <button
           @click="generateReport"
-          class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+          class="flex items-center px-4 py-2 bg-gradient1 text-white rounded-lg "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

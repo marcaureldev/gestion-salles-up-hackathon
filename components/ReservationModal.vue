@@ -23,6 +23,16 @@
               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
           </div>
           <div class="mb-4">
+            <label for="effectif" class="block text-sm font-medium text-gray-700">Effectif</label>
+            <input 
+              type="number" 
+              id="effectif" 
+              v-model="form.effectif" 
+              required
+              min="1"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          </div>
+          <div class="mb-4">
             <label for="start" class="block text-sm font-medium text-gray-700">Date et heure de début</label>
             <input type="datetime-local" id="start" v-model="form.start" required
               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
@@ -32,6 +42,7 @@
             <input type="datetime-local" id="end" v-model="form.end" required
               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
           </div>
+          
           <div class="flex justify-end space-x-3">
             <button type="button" @click="$emit('close')"
               class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
@@ -69,6 +80,7 @@ const form = ref({
   title: "",
   start: "",
   end: "",
+  effectif: 30,
 });
 
 const modalTitle = computed(() =>
@@ -98,6 +110,7 @@ watch(
         courseName: newEvent.extendedProps.courseName,
         start: formatDate(newEvent.start),
         end: formatDate(newEvent.end),
+        effectif: newEvent.extendedProps.effectif || 30,
       };
     } else {
       form.value = {
@@ -105,6 +118,7 @@ watch(
         courseName: "",
         start: formatDate(props.start),
         end: formatDate(props.end),
+        effectif: 30,
       };
     }
   },
@@ -120,6 +134,8 @@ function handleSubmit() {
     ...form.value,
     start: new Date(form.value.start),
     end: new Date(form.value.end),
+    title: form.value.courseName,
+    effectif: parseInt(form.value.effectif) || 30,
   });
 }
 </script>

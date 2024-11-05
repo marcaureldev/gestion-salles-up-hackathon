@@ -12,8 +12,8 @@
                 <input
                     class="w-full px-6 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 focus:outline-none focus:bg-white mt-5"
                     type="password" placeholder="Mot de passe" />
-
-                <button
+                <NuxtLink to="/dashboard-admin">
+                    <button
                     class="mt-5 font-semibold bg-custom-gradient text-white w-full py-3 rounded-lg flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                         <path fill="currentColor"
@@ -22,6 +22,8 @@
                     </svg>
                     <span class="ml-3">Connectez-vous</span>
                 </button>
+            </NuxtLink>
+
             </div>
             <div class="pt-4">
                 <div class=" pt-3 text-xs  bg-custom-gradient bg-clip-text text-transparent ">
